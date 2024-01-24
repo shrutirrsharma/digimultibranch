@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Digital Signature</title>
+    <title>Digital Signature - Test by Afiya</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>    
 </head>
 <body>
