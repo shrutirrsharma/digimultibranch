@@ -32,25 +32,21 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
- # - task: PublishBuildArtifacts@1
- #   inputs:
- #     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
- #     artifactName: 'drop'
- #     publishLocation: 'Container'
-- job: PublishArtifacts
-  displayName: 'Publish Artifacts'
-  dependsOn: Build
-  steps:
   - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifacts'
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'DigitalSignaturedrop'
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
       publishLocation: 'Container'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop'
+ 
 
 - job: DeployUAT
   displayName: 'Deploy to UAT'
-  dependsOn: PublishArtifacts
+  dependsOn: Build
   condition: eq(variables['Build.SourceBranchName'], 'main')
   pool:
     name: Default
@@ -65,11 +61,11 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/*/.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/*/.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
-  dependsOn: PublishArtifacts
+  dependsOn: Build
   condition: eq(variables['Build.SourceBranchName'], 'production')
   pool:
     name: Default
@@ -84,4 +80,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/*/.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/*/.zip'
