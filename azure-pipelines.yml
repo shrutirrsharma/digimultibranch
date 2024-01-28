@@ -32,17 +32,17 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - task: PublishBuildArtifacts@1
+   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
       publishLocation: 'Container'
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop'
- 
 
 - job: DeployUAT
   displayName: 'Deploy to UAT'
@@ -61,7 +61,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/*/.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/**/*.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -80,4 +80,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/*/.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/**/*.zip'
