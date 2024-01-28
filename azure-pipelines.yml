@@ -62,7 +62,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -82,4 +82,5 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+
