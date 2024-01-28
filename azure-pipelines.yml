@@ -5,8 +5,8 @@
 
 trigger:
   - '*'   # pipeline should be triggered on any changes to the repository (any branch)
-pr:
-  - '*'   # pipeline should also run on any pull requests
+#pr:
+#  - '*'   # pipeline should also run on any pull requests
 
 jobs:
 - job: Build
