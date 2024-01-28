@@ -4,38 +4,79 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-- main
+  - '*'   # pipeline should be triggered on any changes to the repository (any branch)
+pr:
+  - '*'   # pipeline should also run on any pull requests
 
+jobs:
+- job: Build
+  pool:
+    name: Default
 
-pool:
-  name: Default
+  variables:
+    solution: '**/*.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  steps:
+  - task: NuGetToolInstaller@1
 
-steps:
-- task: NuGetToolInstaller@1
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: VSTest@2
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+      publishLocation: 'Container'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'drop'
-    publishLocation: 'Container'
+- job: Deploy
+  pool:
+    name: Default
+
+  steps:
+  - checkout: self # checks out the source code from the repository
+  - script: |
+      if [ "$(Build.SourceBranchName)" == "main" ]; then
+        echo "Deploying to UAT server..."
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
+            appType: 'webApp'
+            WebAppName: 'DigitalSignature'
+            deployToSlotOrASE: true
+            ResourceGroupName: 'ClWebAPI_group'
+            SlotName: 'production'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        # Add commands to deploy to UAT server
+      elif [ "$(Build.SourceBranchName)" == "production" ]; then
+        echo "Deploying to Production server..."
+        # Add commands to deploy to Production server
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
+            appType: 'webApp'
+            WebAppName: 'DigitalSignatureProd'
+            deployToSlotOrASE: true
+            ResourceGroupName: 'ClWebAPI_group'
+            SlotName: 'production'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
+      else
+        echo "No deployment for branch $(Build.SourceBranchName)"
+      fi
