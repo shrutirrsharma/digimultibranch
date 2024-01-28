@@ -4,9 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-  - '*'   # pipeline should be triggered on any changes to the repository (any branch)
-pr:
-  - '*'   # pipeline should also run on any pull requests
+  - 'test'   # pipeline should be triggered on any changes to the repository (any branch)
 
 jobs:
 - job: Build
@@ -17,7 +15,6 @@ jobs:
     solution: '**/*.sln'
     buildPlatform: 'Any CPU'
     buildConfiguration: 'Release'
-    system.debug: true
 
   steps:
   - task: NuGetToolInstaller@1
@@ -43,40 +40,3 @@ jobs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
       publishLocation: 'Container'
-
-- job: Deploy
-  pool:
-    name: Default
-
-  steps:
-  - checkout: self # checks out the source code from the repository
-  - script: |
-      if [ "$(Build.SourceBranchName)" == "main" ]; then
-        echo "Deploying to UAT server..."
-        # Add commands to deploy to UAT server
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-            appType: 'webApp'
-            WebAppName: 'DigitalSignature'
-            deployToSlotOrASE: true
-            ResourceGroupName: 'ClWebAPI_group'
-            SlotName: 'production'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-      elif [ "$(Build.SourceBranchName)" == "production" ]; then
-        echo "Deploying to Production server..."
-        # Add commands to deploy to Production server
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-            appType: 'webApp'
-            WebAppName: 'DigitalSignatureProd'
-            deployToSlotOrASE: true
-            ResourceGroupName: 'ClWebAPI_group'
-            SlotName: 'production'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-      else
-        echo "No deployment for branch $(Build.SourceBranchName)"
-      fi
