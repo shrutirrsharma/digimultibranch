@@ -51,29 +51,11 @@ jobs:
       if [ "$(Build.SourceBranchName)" == "main" ]; then
         echo "Deploying to UAT server..."
         # Add commands to deploy to UAT server
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-            appType: 'webApp'
-            WebAppName: 'DigitalSignature'
-            deployToSlotOrASE: true
-            ResourceGroupName: 'ClWebAPI_group'
-            SlotName: 'production'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        az webapp deployment source config-zip --resource-group ClWebAPI_group --name DigitalSignature --src '$(System.DefaultWorkingDirectory)/**/*.zip'
       elif [ "$(Build.SourceBranchName)" == "production" ]; then
         echo "Deploying to Production server..."
         # Add commands to deploy to Production server
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-            appType: 'webApp'
-            WebAppName: 'DigitalSignatureProd'
-            deployToSlotOrASE: true
-            ResourceGroupName: 'ClWebAPI_group'
-            SlotName: 'production'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        az webapp deployment source config-zip --resource-group ClWebAPI_group --name DigitalSignatureProd --src '$(System.DefaultWorkingDirectory)/**/*.zip'
       else
         echo "No deployment for branch $(Build.SourceBranchName)"
       fi
