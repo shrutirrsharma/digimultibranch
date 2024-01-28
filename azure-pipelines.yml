@@ -38,9 +38,6 @@ jobs:
       artifactName: 'drop'
       publishLocation: 'Container'
 
-
-
-
 - job: Deploy
   pool:
     name: Default
@@ -48,14 +45,14 @@ jobs:
   steps:
   - checkout: self # checks out the source code from the repository
   - script: |
-      if [ "$(Build.SourceBranchName)" == "main" ]; then
-        echo "Deploying to UAT server..."
+      if "%BUILD_SOURCEBRANCHNAME%"=="main" (
+        echo Deploying to UAT server...
         # Add commands to deploy to UAT server
         az webapp deployment source config-zip --resource-group ClWebAPI_group --name DigitalSignature --src '$(System.DefaultWorkingDirectory)/**/*.zip'
-      elif [ "$(Build.SourceBranchName)" == "production" ]; then
-        echo "Deploying to Production server..."
+      ) else if "%BUILD_SOURCEBRANCHNAME%"=="production" (
+        echo Deploying to Production server...
         # Add commands to deploy to Production server
         az webapp deployment source config-zip --resource-group ClWebAPI_group --name DigitalSignatureProd --src '$(System.DefaultWorkingDirectory)/**/*.zip'
-      else
-        echo "No deployment for branch $(Build.SourceBranchName)"
-      fi
+      ) else (
+        echo No deployment for branch %BUILD_SOURCEBRANCHNAME%
+      )
