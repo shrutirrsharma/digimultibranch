@@ -10,7 +10,7 @@ jobs:
     name: Default
 
   variables:
-    solution: '**/*.sln'
+    solution: '*/.sln'
     buildPlatform: 'Any CPU'
     buildConfiguration: 'Release'
 
@@ -51,7 +51,6 @@ jobs:
   pool:
     name: Default
   steps:
-  - checkout: none
   - task: AzureRmWebAppDeployment@4
     displayName: 'Deploy to UAT web app'
     inputs:
@@ -62,7 +61,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/*/.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -71,7 +70,6 @@ jobs:
   pool:
     name: Default
   steps:
-  - checkout: none
   - task: AzureRmWebAppDeployment@4
     displayName: 'Deploy to Production web app'
     inputs:
@@ -82,5 +80,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-
+      packageForLinux: '$(System.DefaultWorkingDirectory)/*/.zip'
