@@ -37,7 +37,6 @@ jobs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
       publishLocation: 'Container'
-
 - job: Deploy
   pool:
     name: Default
@@ -47,7 +46,6 @@ jobs:
   - script: |
       if "%BUILD_SOURCEBRANCHNAME%"=="main" (
         echo Deploying to UAT server...
-        # Add commands to deploy to UAT server
         # Add commands to deploy to UAT server
         - task: AzureRmWebAppDeployment@4
           inputs:
@@ -75,3 +73,4 @@ jobs:
       ) else (
         echo No deployment for branch %BUILD_SOURCEBRANCHNAME%
       )
+      fi
