@@ -31,11 +31,12 @@ jobs:
     inputs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
+
   - task: CopyFiles@2
     inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)'
-      Contents: '**/*.zip'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)/ArtifactFolder'
+     SourceFolder: '$(Build.ArtifactStagingDirectory)'
+     Contents: '**'
+     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder'
 
   - task: PublishPipelineArtifact@1
     inputs:
@@ -60,7 +61,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/ArtifactFolder/**/*.zip'
+      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder/**/*.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -79,4 +80,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/ArtifactFolder/**/*.zip'
+      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder/**/*.zip'
