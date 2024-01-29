@@ -60,7 +60,7 @@ jobs:
       WebAppName: 'DigitalSignature'
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
-      SlotName: 'uat'
+      SlotName: 'production'
       packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder/**/*.zip'
 
 - job: DeployProd
