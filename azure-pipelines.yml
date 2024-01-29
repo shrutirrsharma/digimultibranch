@@ -32,52 +32,8 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - task: PublishBuildArtifacts@1
+  - task: PublishPipelineArtifact@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'drop'
-      publishLocation: 'Container'
-
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop'
-
-- job: DeployUAT
-  displayName: 'Deploy to UAT'
-  dependsOn: Build
-  condition: eq(variables['Build.SourceBranchName'], 'main')
-  pool:
-    name: Default
-  steps:
-  - task: AzureRmWebAppDeployment@4
-    displayName: 'Deploy to UAT web app'
-    inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-      appType: 'webApp'
-      WebAppName: 'DigitalSignature'
-      deployToSlotOrASE: true
-      ResourceGroupName: 'ClWebAPI_group'
-      SlotName: 'uat'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/**/*.zip'
-
-- job: DeployProd
-  displayName: 'Deploy to Production'
-  dependsOn: Build
-  condition: eq(variables['Build.SourceBranchName'], 'production')
-  pool:
-    name: Default
-  steps:
-  - task: AzureRmWebAppDeployment@4
-    displayName: 'Deploy to Production web app'
-    inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'Free Trial(6c3e4386-799c-4546-96a2-1cb6c673dc85)'
-      appType: 'webApp'
-      WebAppName: 'DigitalSignatureProd'
-      deployToSlotOrASE: true
-      ResourceGroupName: 'ClWebAPI_group'
-      SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/CopiedArtifacts/DGDrop/**/*.zip'
+      targetPath: '$(Pipeline.Workspace)'
+      artifact: 'Drop'
+      publishLocation: 'pipeline'
