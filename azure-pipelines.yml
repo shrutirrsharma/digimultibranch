@@ -38,7 +38,7 @@ jobs:
       artifact: 'Drop'
       publishLocation: 'pipeline'
 
-   - job: DeployUAT
+- job: DeployUAT
   displayName: 'Deploy to UAT'
   dependsOn: Build
   condition: eq(variables['Build.SourceBranchName'], 'main')
@@ -74,4 +74,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'   
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
