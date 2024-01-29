@@ -33,6 +33,7 @@ jobs:
       configuration: '$(buildConfiguration)'
 
   - task: CopyFiles@2
+    displayName: 'Copy Main Branch'
     condition: eq(variables['Build.SourceBranchName'], 'main')     
     inputs:
      SourceFolder: '$(Build.ArtifactStagingDirectory)'
@@ -41,6 +42,7 @@ jobs:
      CleanTargetFolder: true
   
   - task: CopyFiles@2
+    displayName: 'Copy Prod Branch'
     condition: eq(variables['Build.SourceBranchName'], 'production')     
     inputs:
      SourceFolder: '$(Build.ArtifactStagingDirectory)'
