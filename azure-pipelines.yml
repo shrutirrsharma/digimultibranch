@@ -33,10 +33,19 @@ jobs:
       configuration: '$(buildConfiguration)'
 
   - task: CopyFiles@2
+    condition: eq(variables['Build.SourceBranchName'], 'main')     
     inputs:
      SourceFolder: '$(Build.ArtifactStagingDirectory)'
      Contents: '**'
-     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder'
+     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain'
+     CleanTargetFolder: true
+  
+  - task: CopyFiles@2
+    condition: eq(variables['Build.SourceBranchName'], 'production')     
+    inputs:
+     SourceFolder: '$(Build.ArtifactStagingDirectory)'
+     Contents: '**'
+     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd'
      CleanTargetFolder: true
 
   - task: PublishPipelineArtifact@1
@@ -62,7 +71,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder/**/*.zip'
+      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain/**/*.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -81,4 +90,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder/**/*.zip'
+      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd/**/*.zip'
