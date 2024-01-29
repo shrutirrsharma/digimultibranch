@@ -31,6 +31,11 @@ jobs:
     inputs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: '**/*.zip'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/ArtifactFolder'
 
   - task: PublishPipelineArtifact@1
     inputs:
@@ -55,7 +60,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'uat'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/ArtifactFolder/**/*.zip'
 
 - job: DeployProd
   displayName: 'Deploy to Production'
@@ -74,4 +79,4 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'ClWebAPI_group'
       SlotName: 'production'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/ArtifactFolder/**/*.zip'
