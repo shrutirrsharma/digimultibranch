@@ -37,6 +37,7 @@ jobs:
      SourceFolder: '$(Build.ArtifactStagingDirectory)'
      Contents: '**'
      TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolder'
+     CleanTargetFolder: true
 
   - task: PublishPipelineArtifact@1
     inputs:
