@@ -25,7 +25,7 @@ jobs:
   - task: VSBuild@1
     inputs:
       solution: '$(solution)'
-      msbuildArgs: '/peployOnBuild=true /p:WebPublishMethod=Package /packageAsSingleFile=true /p:SkipInvalidConfigurations=true /packageLocation="$(build.artifactStagingDirectory)"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
