@@ -1,189 +1,88 @@
 trigger:
-
   - '*'   # pipeline should be triggered on any changes to the repository (any branch)
 
 pr:
-
   - '*'   # pipeline should also run on any pull requests
-
- 
 
 jobs:
 
 - job: Build
-
   pool:
-
     name: Default
-
- 
 
   variables:
-
     solution: '**/*.sln'
-
     buildPlatform: 'Any CPU'
-
     buildConfiguration: 'Release'
 
- 
-
   steps:
-
   - task: NuGetToolInstaller@1
 
- 
-
   - task: NuGetCommand@2
-
     inputs:
-
       restoreSolution: '$(solution)'
 
- 
-
   - task: VSBuild@1
-
     inputs:
-
       solution: '$(solution)'
-
       msbuildArgs: '/peployOnBuild=true /p:WebPublishMethod=Package /packageAsSingleFile=true /p:SkipInvalidConfigurations=true /packageLocation="$(build.artifactStagingDirectory)"'
-
       platform: '$(buildPlatform)'
-
       configuration: '$(buildConfiguration)'
-
- 
 
   - task: VSTest@2
-
     inputs:
-
       platform: '$(buildPlatform)'
-
       configuration: '$(buildConfiguration)'
 
- 
-
   - task: CopyFiles@2
-
     displayName: 'Copy Main Branch'
-
     condition: eq(variables['Build.SourceBranchName'], 'main')     
-
     inputs:
-
-     SourceFolder: '$(Build.ArtifactStagingDirectory)'
-
-     Contents: '**'
-
-     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain'
-
-     CleanTargetFolder: true
-
-  
-
-  - task: CopyFiles@2
-
-    displayName: 'Copy Prod Branch'
-
-    condition: eq(variables['Build.SourceBranchName'], 'production')     
-
-    inputs:
-
-     SourceFolder: '$(Build.ArtifactStagingDirectory)'
-
-     Contents: '**'
-
-     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd'
-
-     CleanTargetFolder: true
-
- 
+      SourceFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: '**'
+      TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain'
+      CleanTargetFolder: true
 
   - task: PublishPipelineArtifact@1
-
     inputs:
-
       targetPath: '$(Pipeline.Workspace)'
-
       artifact: 'Drop'
-
       publishLocation: 'pipeline'
 
- 
-
 - job: DeployUAT
-
   displayName: 'Deploy to UAT'
-
   dependsOn: Build
-
   condition: eq(variables['Build.SourceBranchName'], 'main')
-
   pool:
-
     name: Default
-
   steps:
-
   - task: AzureRmWebAppDeployment@4
-
     displayName: 'Deploy to UAT web app'
-
     inputs:
-
       ConnectionType: 'AzureRM'
-
-      azureSubscription: 'Free Trial(b92e97c1-b96e-49cf-88e2-821cb18fc022)'
-
+      azureSubscription: 'IIS-Service-Connection'  # Correct service connection name
       appType: 'webApp'
-
       WebAppName: 'IIS-Windows-Deployment'
-
       deployToSlotOrASE: true
-
       ResourceGroupName: 'IIS-Deployment'
-
       SlotName: 'production'
-
       packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain/**/*.zip'
 
- 
-
 # - job: DeployProd
-
 #   displayName: 'Deploy to Production'
-
 #   dependsOn: Build
-
 #   condition: eq(variables['Build.SourceBranchName'], 'production')
-
 #   pool:
-
 #     name: Default
-
 #   steps:
-
 #   - task: AzureRmWebAppDeployment@4
-
 #     displayName: 'Deploy to Production web app'
-
 #     inputs:
-
 #       ConnectionType: 'AzureRM'
-
-#       azureSubscription: 'Free Trial(b92e97c1-b96e-49cf-88e2-821cb18fc022)'
-
+#       azureSubscription: 'IIS-Service-Connection'  # Correct service connection name
 #       appType: 'webApp'
-
 #       WebAppName: 'IIS-Windows-Deployment'
-
 #       deployToSlotOrASE: true
-
 #       ResourceGroupName: 'IIS-Deployment'
-
 #       SlotName: 'production'
-
 #       packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd/**/*.zip'
