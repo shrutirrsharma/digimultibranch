@@ -1,8 +1,8 @@
 trigger:
-  - '*'   # pipeline should be triggered on any changes to the repository (any branch)
+  - '*'   # Pipeline should be triggered on any changes to the repository (any branch)
 
 pr:
-  - '*'   # pipeline should also run on any pull requests
+  - '*'   # Pipeline should also run on any pull requests
 
 jobs:
 
@@ -25,7 +25,7 @@ jobs:
   - task: VSBuild@1
     inputs:
       solution: '$(solution)'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\DigitalSignature.zip"'
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
@@ -34,28 +34,9 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - task: CopyFiles@2
-    displayName: 'Copy Main Branch'
-    condition: eq(variables['Build.SourceBranchName'], 'main')     
-    inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)'
-      Contents: '**'
-      TargetFolder: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain'
-      CleanTargetFolder: true
-
-  # Add this section back in as commented
-  # - task: CopyFiles@2
-  #   displayName: 'Copy Prod Branch'
-  #   condition: eq(variables['Build.SourceBranchName'], 'production')     
-  #   inputs:
-  #     SourceFolder: '$(Build.ArtifactStagingDirectory)'
-  #     Contents: '**'
-  #     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd'
-  #     CleanTargetFolder: true
-
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Pipeline.Workspace)'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'Drop'
       publishLocation: 'pipeline'
 
@@ -71,28 +52,8 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\DigitalSignature.zip'
+        $source = '$(Pipeline.Workspace)\Drop\DigitalSignature.zip'  # Path to the zip file in the pipeline workspace
         $destination = 'C:\inetpub\wwwroot\digitalsign\'  # Your physical path
 
         # Unzip the package if it's a zip file
         Expand-Archive -Path $source -DestinationPath $destination -Force
-        
-
-# - job: DeployProd
-#   displayName: 'Deploy to Production'
-#   dependsOn: Build
-#   condition: eq(variables['Build.SourceBranchName'], 'production')
-#   pool:
-#     name: Default
-#   steps:
-#   - task: AzureRmWebAppDeployment@4
-#     displayName: 'Deploy to Production web app'
-#     inputs:
-#       ConnectionType: 'AzureRM'
-#       azureSubscription: 'IIS-Service-Connection'  # Correct service connection name
-#       appType: 'webApp'
-#       WebAppName: 'IIS-Windows-Deployment'
-#       deployToSlotOrASE: true
-#       ResourceGroupName: 'IIS-Deployment'
-#       SlotName: 'production'
-#       packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd/**/*.zip'
