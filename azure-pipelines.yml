@@ -40,7 +40,7 @@ jobs:
     inputs:
       SourceFolder: '$(Build.ArtifactStagingDirectory)'
       Contents: '**'
-      TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain'
+      TargetFolder: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work'
       CleanTargetFolder: true
 
   # Add this section back in as commented
@@ -76,7 +76,7 @@ jobs:
       deployToSlotOrASE: true
       ResourceGroupName: 'IIS-Deployment'
       SlotName: 'production'
-      packageForLinux: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain/**/*.zip'
+      packageForLinux: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work/14/ArtifactFolderMain/**/*.zip'
 
 # - job: DeployProd
 #   displayName: 'Deploy to Production'
