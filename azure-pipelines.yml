@@ -40,7 +40,7 @@ jobs:
     inputs:
       SourceFolder: '$(Build.ArtifactStagingDirectory)'
       Contents: '**'
-      TargetFolder: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work'
+      TargetFolder: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain'
       CleanTargetFolder: true
 
   # Add this section back in as commented
