@@ -71,7 +71,7 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\**\*.zip'
+        $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\DigitalSignature.zip'
         $destination = 'C:\inetpub\wwwroot\digitalsign'  # Your physical path
 
         # Unzip the package if it's a zip file
