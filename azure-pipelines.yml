@@ -43,6 +43,16 @@ jobs:
       TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderMain'
       CleanTargetFolder: true
 
+  # Add this section back in as commented
+  # - task: CopyFiles@2
+  #   displayName: 'Copy Prod Branch'
+  #   condition: eq(variables['Build.SourceBranchName'], 'production')     
+  #   inputs:
+  #     SourceFolder: '$(Build.ArtifactStagingDirectory)'
+  #     Contents: '**'
+  #     TargetFolder: 'C:/AfiyaAgentAzure/New folder/_work/14/ArtifactFolderProd'
+  #     CleanTargetFolder: true
+
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Pipeline.Workspace)'
