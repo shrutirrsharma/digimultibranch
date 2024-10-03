@@ -72,11 +72,11 @@ jobs:
       ConnectionType: 'AzureRM'
       azureSubscription: 'IIS-Service-Connection'  # Correct service connection name
       appType: 'webApp'
-      WebAppName: 'IIS-Windows-Deployment'
-      deployToSlotOrASE: true
+      WebAppName: 'MyWebsite'
+      deployToSlotOrASE: false
       ResourceGroupName: 'IIS-Deployment'
       SlotName: 'production'
-      packageForLinux: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work/14/ArtifactFolderMain/**/*.zip'
+      packageForLinux: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\**\*.zip'
 
 # - job: DeployProd
 #   displayName: 'Deploy to Production'
