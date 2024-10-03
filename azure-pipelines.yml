@@ -52,8 +52,14 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        $source = '$(Pipeline.Workspace)\Drop\DigitalSignature.zip'  # Path to the zip file in the pipeline workspace
+        $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\DigitalSignature.zip'  # Actual path of the zip file
         $destination = 'C:\inetpub\wwwroot\digitalsign\'  # Your physical path
 
-        # Unzip the package if it's a zip file
-        Expand-Archive -Path $source -DestinationPath $destination -Force
+        # Check if the source file exists before attempting to unzip
+        if (Test-Path -Path $source) {
+          # Unzip the package if it's a zip file
+          Expand-Archive -Path $source -DestinationPath $destination -Force
+        } else {
+          Write-Error "The source file does not exist: $source"
+          exit 1
+        }
