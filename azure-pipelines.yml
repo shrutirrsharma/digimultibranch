@@ -66,17 +66,17 @@ jobs:
   pool:
     name: Default
   steps:
-  - task: AzureRmWebAppDeployment@4
-    displayName: 'Deploy to UAT web app'
+  - task: PowerShell@2
+    displayName: 'Deploy to IIS'
     inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'IIS-Service-Connection'  # Correct service connection name
-      appType: 'webApp'
-      WebAppName: 'MyWebsite'
-      deployToSlotOrASE: false
-      ResourceGroupName: 'IIS-Deployment'
-      SlotName: 'production'
-      packageForLinux: 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\**\*.zip'
+      targetType: 'inline'
+      script: |
+        $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\**\*.zip'
+        $destination = 'C:\inetpub\wwwroot\digitalsign'  # Your physical path
+
+        # Unzip the package if it's a zip file
+        Expand-Archive -Path $source -DestinationPath $destination -Force
+        
 
 # - job: DeployProd
 #   displayName: 'Deploy to Production'
