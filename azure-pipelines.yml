@@ -51,9 +51,9 @@ jobs:
     displayName: 'Deploy to IIS'
     inputs:
       targetType: 'inline'
-      script: |
+      script: | 
         $source = 'C:\Users\IIS-Windows-name\Downloads\vsts-agent-win-x64-3.244.1\_work\ArtifactFolderMain\DigitalSignature.zip'  # Actual path of the zip file
-        $destination = 'C:\inetpub\wwwroot\digitalsign\'  # Your physical path
+        $destination = 'C:\Users\IIS-Windows-name\IIS_Deploy'  # Your physical path
 
         # Check if the source file exists before attempting to unzip
         if (Test-Path -Path $source) {
